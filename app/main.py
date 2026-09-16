@@ -13,6 +13,7 @@ class Student(BaseModel):
 
 students_db = {}
 
+# POST: Create student
 @app.post("/students", response_model=Student, status_code=status.HTTP_201_CREATED)
 def create_student(student: Student):
     if student.id in students_db:
@@ -20,16 +21,19 @@ def create_student(student: Student):
     students_db[student.id] = student
     return student
 
+# GET: Read all students
 @app.get("/students", response_model=List[Student])
 def get_all_students():
     return list(students_db.values())
 
+# GET: Read single student by ID
 @app.get("/students/{student_id}", response_model=Student)
 def get_student(student_id: int):
     if student_id not in students_db:
         raise HTTPException(status_code=404, detail="Student not found")
     return students_db[student_id]
 
+# PUT: Update student
 @app.put("/students/{student_id}", response_model=Student)
 def update_student(student_id: int, updated_student: Student):
     if student_id not in students_db:
@@ -37,6 +41,7 @@ def update_student(student_id: int, updated_student: Student):
     students_db[student_id] = updated_student
     return updated_student
 
+# DELETE: Remove student
 @app.delete("/students/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_student(student_id: int):
     if student_id not in students_db:
